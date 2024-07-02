@@ -1,13 +1,6 @@
 # AFM image processing and analysis
 Python scripts for AFM image processing and analysis
 
-# Applicant: Yulia Fok
-
-# Institute: DyNaMo
-
-# Engineer: Thang Duong Quoc LE
-
-# Submission date: 20/02/2024
 # Project Title
 # IDP30| DyNaMo | Measuring lipid bilayers height with accuracy 
 
