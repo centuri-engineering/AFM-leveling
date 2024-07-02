@@ -6,7 +6,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
-    name='#IDP30| DyNaMo | Measuring lipid bilayers height with accuracy',
+    name='afmprocessing',
     version='1.0.0',
     description='Python scripts for AFM image processing and analysis',
     long_description=long_description,
