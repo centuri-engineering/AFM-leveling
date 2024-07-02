@@ -14,5 +14,5 @@ pip install git+https://github.com/ledvic/AFM-levelling-height_measurement.git
 ## Updating
 ```
 conda activate afmprocessing
-pip install -U afmprocessing
+pip install -U git+https://github.com/ledvic/AFM-levelling-height_measurement.git
 ```
