@@ -16,7 +16,7 @@ from skimage import io, measure
 if __name__ == "__main__":
     ############################################################################################
     # Step 1: Load raw AFM data 
-    # Load TXT file
+    # Load TXT file generated from the instrument
     file_folder = 'inputs//test-small_patches-21062024'
     file_path = os.path.join(file_folder, 'small_patches-before.txt')
 
@@ -28,7 +28,6 @@ if __name__ == "__main__":
     # Step 2: Load image and do segmentation
     file_folder = 'inputs//test-small_patches-21062024'
     tif_file_path = os.path.join(file_folder, 'small_patches-after.tif')
-    
     tif_image_data = io.imread(tif_file_path, as_gray=True)
     
     segmented_mask = extract_Objects_With_Global_Thresholding(tif_image_data, 'mean')
@@ -43,13 +42,11 @@ if __name__ == "__main__":
     # Step 4: Levelling the AFM height data
     mask = segmented_mask.astype(bool)  # Ensure it's a boolean mask
     
-    height_data_fitted = sliding_window_fit_polynomial_surface(height_data_correction, mask, window_size=8, poly_order=3) # Fit the polynomial surface
-    
+    height_data_fitted = sliding_window_fit_polynomial_surface(height_data_correction, mask, window_size=8, poly_order=3) # Fit the sliding-window polynomial surface
     
     height_data_levelled = height_data_correction - height_data_fitted # Calculate the flattened data
 
-    height_data_levelled = np.nan_to_num(height_data_levelled, nan=np.nanmin(height_data_levelled))
-
+    height_data_levelled = np.nan_to_num(height_data_levelled, nan=np.nanmin(height_data_levelled)) # Assign NaN values as min values
 
     height_data_levelled = height_data_levelled - np.min(height_data_levelled) # shift the minimum to zero
 
@@ -72,5 +69,3 @@ if __name__ == "__main__":
     # Save the data file as TXT file in the output folder
     output_file_path = os.path.join(output_folder, f'{input_file_name}-levelled.txt')
     save_AFM_height_data(height_data_levelled, output_file_path)
-    
-    plt.show()
