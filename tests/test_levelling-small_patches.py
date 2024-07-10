@@ -23,12 +23,7 @@ if __name__ == "__main__":
     metadata, height_data = read_afm_jpk_txt_file(file_path)
 
     image_data = np.flipud(create_height_image(height_data))
-
-    # plt.figure(figsize=(8, 7))
-    # plt.imshow(image_data, cmap='gray')
-    # plt.title('The AFM image')
-    # plt.axis('off')
-    # plt.show(block=False)
+    
     ############################################################################################
     # Step 2: Load image and do segmentation
     file_folder = 'inputs//test-small_patches-21062024'
@@ -38,37 +33,12 @@ if __name__ == "__main__":
     
     segmented_mask = extract_Objects_With_Global_Thresholding(tif_image_data, 'mean')
     
-    # # visualize
-    # plt.figure(figsize=(8, 7))
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(tif_image_data, cmap='gray')
-    # plt.title('The AFM image')
-    # plt.axis('off')
-
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(segmented_mask, cmap='gray')
-    # plt.title('The segemented mask')
-    # plt.axis('off')
-
-    # plt.show(block=False)
     ############################################################################################
     # Step 3: Removel scan line artefacts
     height_data_correction = do_median_of_differences(np.flipud(height_data)) # scan line artefact correction
     
     image_data_correction = create_height_image(height_data_correction) # show the image before and after the artefact correction
 
-    # plt.figure(figsize=(8, 7))
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(image_data, cmap='gray')
-    # plt.title('The AFM image')
-    # plt.axis('off')
-
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(image_data_correction, cmap='gray')
-    # plt.title('The AFM image after removing scan line artefact')
-    # plt.axis('off')
-
-    # plt.show(block=False)
     ############################################################################################
     # Step 4: Levelling the AFM height data
     mask = segmented_mask.astype(bool)  # Ensure it's a boolean mask
@@ -84,26 +54,7 @@ if __name__ == "__main__":
     height_data_levelled = height_data_levelled - np.min(height_data_levelled) # shift the minimum to zero
 
     image_data_levelled = create_height_image(height_data_levelled)
-    # Visualize the results
-    # fig, axs = plt.subplots(2, 2, figsize=(15, 10))
 
-    # axs[0, 0].imshow(image_data_correction, cmap='gray')
-    # axs[0, 0].set_title('The AFM image after correction of scan line artefact')
-
-    # axs[0, 1].imshow(segmented_mask, cmap='gray')
-    # axs[0, 1].set_title('Foreground')
-
-    # axs[1, 0].imshow(create_height_image(height_data_fitted), cmap='gray')
-    # axs[1, 0].set_title('Polynomial Fitted Surface')
-
-    # axs[1, 1].imshow(image_data_levelled, cmap='gray')
-    # axs[1, 1].set_title('AFM image after levelling')
-
-    # for ax in axs.ravel():
-    #     ax.axis('off')
-
-    # plt.tight_layout()
-    # plt.show(block=False)
     ############################################################################################
     # Save the levelled data into an output folder
     # Get the file name without extension
