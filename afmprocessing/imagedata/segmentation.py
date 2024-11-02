@@ -13,7 +13,7 @@ from collections import OrderedDict
 from matplotlib import pyplot as plt
 
 
-def extract_Objects_With_Local_Thresholding(image_data, method = 'niblack', window_size=127, k=0.3, post_processing=False):
+def extract_Objects_With_Local_Thresholding(image_data, method = 'niblack', window_size=127, k=0.3, post_processing=False, show_figure=False):
 	
 	foreground_mask = np.zeros_like(image_data)
 
@@ -24,14 +24,34 @@ def extract_Objects_With_Local_Thresholding(image_data, method = 'niblack', wind
 	else:
 		raise ValueError("Unknown method. Choose 'niblack' or 'sauvola'.")
 	
+	background_mask = ~foreground_mask
 	# apply post-processing
 	if post_processing is True:
-		binary_mask = apply_post_processing(foreground_mask, 15)
+		foreground_mask = apply_post_processing(foreground_mask, 15)
 
-	return foreground_mask
+	if show_figure:
+		fig, axarr = plt.subplots(nrows=1, ncols=3, figsize=(15, 6), tight_layout=True)
+		axarr = axarr.reshape(1, 3)  # Reshape to 2D array
+		axarr[0,0].imshow(image_data, cmap='gray')
+		axarr[0,0].set_title("Image From JPK Software")
+		axarr[0,1].imshow(foreground_mask, cmap='gray')
+		axarr[0,1].set_title("Foreground")
+		axarr[0,2].imshow(background_mask, cmap='gray')
+		axarr[0,2].set_title("Background")
+		for ax in axarr.ravel():
+			ax.set_axis_off()
+
+		# Add overall title
+		fig.suptitle('Segmentation of foreground using Local Thresholding \n (method = ' + method + ')', 
+				fontsize=14, fontweight='bold')
+		# Regular tight layout
+		plt.tight_layout()
+		plt.show()
+
+	return foreground_mask, background_mask
 
 
-def extract_Objects_With_Global_Thresholding(image_data, method = 'mean', post_processing=False):
+def extract_Objects_With_Global_Thresholding(image_data, method = 'mean', post_processing=False, show_figure=False):
 	
 	foreground_mask = np.zeros_like(image_data)
 
@@ -52,11 +72,31 @@ def extract_Objects_With_Global_Thresholding(image_data, method = 'mean', post_p
 	else:
 		raise ValueError("Unknown method. Choose 'niblack' or 'sauvola'.")
 	
+	background_mask = ~foreground_mask
 	# apply post-processing
 	if post_processing is True:
 		foreground_mask = apply_post_processing(foreground_mask, 15)
 
-	return foreground_mask
+	if show_figure:
+		fig, axarr = plt.subplots(nrows=1, ncols=3, figsize=(15, 6), tight_layout=True)
+		axarr = axarr.reshape(1, 3)  # Reshape to 2D array
+		axarr[0,0].imshow(image_data, cmap='gray')
+		axarr[0,0].set_title("Image From JPK Software")
+		axarr[0,1].imshow(foreground_mask, cmap='gray')
+		axarr[0,1].set_title("Foreground")
+		axarr[0,2].imshow(background_mask, cmap='gray')
+		axarr[0,2].set_title("Background")
+		for ax in axarr.ravel():
+			ax.set_axis_off()
+
+		# Add overall title
+		fig.suptitle('Segmentation of foreground using Global Thresholding \n (method = ' + method + ')', 
+				fontsize=14, fontweight='bold')
+		# Regular tight layout
+		plt.tight_layout()
+		plt.show()
+
+	return foreground_mask, background_mask
 
 def apply_post_processing(binary_mask, min_object_size=15):
 	# Fill holes
@@ -223,7 +263,7 @@ def separate_background_gmm(image_data, n_components=3, background_label=None, p
 		foreground_mask = apply_post_processing(foreground_mask, 15)
 	
 	if show_figure:
-		fig, axarr = plt.subplots(nrows=1, ncols=3, figsize=(15, 5), tight_layout=True)
+		fig, axarr = plt.subplots(nrows=1, ncols=3, figsize=(15, 6), tight_layout=True)
 		axarr = axarr.reshape(1, 3)  # Reshape to 2D array
 		axarr[0,0].imshow(image_data, cmap='gray')
 		axarr[0,0].set_title("Image From JPK Software")
@@ -235,10 +275,10 @@ def separate_background_gmm(image_data, n_components=3, background_label=None, p
 			ax.set_axis_off()
 
 		# Add overall title
-		fig.suptitle('Segmentation (number of components = ' + str(n_components) + ', and label of background = '+ str(background_label) +')', 
+		fig.suptitle('Segmentation of foreground using Gaussian Mixture Model \n (number of components = ' + str(n_components) + ', and label of background = '+ str(background_label) +')', 
 				fontsize=14, fontweight='bold')
 		# Regular tight layout
 		plt.tight_layout()
 		plt.show()
-        
+		
 	return background_mask.astype(bool), foreground_mask
