@@ -17,13 +17,13 @@ def do_median_of_differences(datafield, method='linear', **kwargs):
         
         medians[i + 1] = median_diff + medians[i]
     
-    medians = slope_level_rowShifts(medians, method, **kwargs)
+    medians = slope_level_row_shifts(medians, method, **kwargs)
     result = apply_row_shifts(datafield, medians)
     
     return result
 
 
-def slope_level_rowShifts(medians, method='linear', **kwargs):
+def slope_level_row_shifts(medians, method='linear', **kwargs):
     x = np.arange(len(medians))
     
     if method == 'linear':
@@ -68,6 +68,7 @@ def apply_row_shifts(datafield, medians):
     
     return result
     
+    
 def do_trimmed_mean_of_differences(datafield, trim_fraction=0.25, method='linear', **kwargs):
     if trim_fraction < 0 or trim_fraction >= 0.5:
         raise ValueError("trim_fraction must be between 0 and 0.5")
@@ -90,7 +91,7 @@ def do_trimmed_mean_of_differences(datafield, trim_fraction=0.25, method='linear
         trimmed_means[i + 1] = trimmed_mean_diff + trimmed_means[i]
     
     # Detrend the accumulated shifts
-    trimmed_means = slope_level_rowShifts(trimmed_means, method, **kwargs)
+    trimmed_means = slope_level_row_shifts(trimmed_means, method, **kwargs)
     
     # Apply the shifts
     result = apply_row_shifts(datafield, trimmed_means)
