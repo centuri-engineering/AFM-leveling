@@ -4,7 +4,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from skimage import measure
-
+from measurement import analyze_height_distribution
 
 def generate_distinct_colors(num_colors, colormap_name='viridis'):
     """Generate distinct colors using a colormap."""
@@ -203,3 +203,47 @@ def show_height_distribution_of_objects(image_data, labeled_mask, selected_objec
 
 
     plt.show(block=False) 
+
+
+def plot_height_distribution(data, n_bins='auto', normalize=False):
+    """
+    Plot height distribution with statistics similar to Gwyddion.
+    """
+    # Get distribution data
+    dist_data = analyze_height_distribution(data, n_bins, normalize)
+    
+    # Create figure with two subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Plot height distribution
+    ax1.plot(dist_data['bin_centers'], dist_data['hist_values'], 'b-', lw=2)
+    ax1.set_xlabel('Height')
+    # ax1.set_xlim([2.75e-7, 3.25e-7])
+    if normalize:
+        ax1.set_ylabel('Probability Density')
+    else:
+        ax1.set_ylabel('Count')
+    ax1.set_title('Height Distribution')
+    
+    # Plot original data
+    im = ax2.imshow(data)
+    ax2.set_title('AFM Data')
+    plt.colorbar(im, ax=ax2)
+    
+    # Add statistics text box
+    stats_text = '\n'.join([
+        f"Mean: {dist_data['statistics']['mean']:.2f}",
+        f"Median: {dist_data['statistics']['median']:.2f}",
+        f"RMS: {dist_data['statistics']['rms']:.2f}",
+        f"Skewness: {dist_data['statistics']['skew']:.2f}",
+        f"Kurtosis: {dist_data['statistics']['kurtosis']:.2f}",
+        f"Ra: {dist_data['statistics']['Ra']:.2f}",
+        f"Rq: {dist_data['statistics']['Rq']:.2f}"
+    ])
+    ax1.text(1.05, 0.95, stats_text,
+             transform=ax1.transAxes,
+             bbox=dict(facecolor='white', alpha=0.8),
+             verticalalignment='top')
+    
+    plt.tight_layout()
+    plt.show()
