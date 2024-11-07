@@ -111,7 +111,7 @@ def apply_post_processing(binary_mask, min_object_size=15):
 
 	return binary_mask_final
 
-def try_all_global_methods(image_data, post_processing=False, figsize=(8, 5), num_cols=2):
+def try_all_global_methods(image_data, post_processing=False, figsize=(16, 5), num_cols=4):
 	methods = OrderedDict(
 		{
 			'Isodata': extract_Objects_With_Global_Thresholding(image_data, method="isodata", post_processing=post_processing),
@@ -146,7 +146,7 @@ def try_all_global_methods(image_data, post_processing=False, figsize=(8, 5), nu
 		ax = fig.add_subplot(gs[row, col])
 		
 		# Plot result
-		im = ax.imshow(result, cmap='gray')
+		im = ax.imshow(result[0], cmap='gray')
 			
 		# Set title with method name
 		ax.set_title(name, pad=10, fontsize=12, fontweight='bold')
@@ -165,9 +165,9 @@ def try_all_global_methods(image_data, post_processing=False, figsize=(8, 5), nu
 	# Adjust layout
 	plt.tight_layout()
 	
-	return fig, axes
+	plt.show()
 
-def try_all_local_methods(image_data, post_processing=False, figsize=(8, 5), num_cols=2, **kwargs):
+def try_all_local_methods(image_data, post_processing=False, figsize=(16, 5), num_cols=3, **kwargs):
 	window_size = kwargs.get('window_size', 127)
 	k = kwargs.get('k', 0.3)
 
@@ -200,7 +200,7 @@ def try_all_local_methods(image_data, post_processing=False, figsize=(8, 5), num
 		ax = fig.add_subplot(gs[row, col])
 		
 		# Plot result
-		im = ax.imshow(result, cmap='gray')
+		im = ax.imshow(result[0], cmap='gray')
 			
 		# Set title with method name
 		ax.set_title(name, pad=10, fontsize=12, fontweight='bold')
@@ -219,7 +219,7 @@ def try_all_local_methods(image_data, post_processing=False, figsize=(8, 5), num
 	# Adjust layout
 	plt.tight_layout()
 	
-	return fig, axes
+	plt.show()
 	
 def separate_background_gmm(image_data, n_components=3, background_label=None, post_processing=False, show_figure=False):
 	"""
