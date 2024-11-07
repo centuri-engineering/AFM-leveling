@@ -9,10 +9,10 @@ IDP30| DyNaMo | Measuring lipid bilayers height with accuracy
 ```
 conda create -n afmprocessing python=3.11
 conda activate afmprocessing
-pip install git+https://github.com/ledvic/AFM-levelling-height_measurement.git#egg=afmprocessing
+pip install git+https://github.com/ledvic/AFM-leveling.git#egg=afmprocessing
 ```
 ## Updating
 ```
 conda activate afmprocessing
-pip install -U git+https://github.com/ledvic/AFM-levelling-height_measurement.git#egg=afmprocessing
+pip install -U git+https://github.com/ledvic/AFM-leveling.git#egg=afmprocessing
 ```
