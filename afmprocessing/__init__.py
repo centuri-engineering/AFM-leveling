@@ -1,4 +1,4 @@
 from . import artefacts
 from . import imagedata
-from . import levelling
+from . import leveling
 from . import stats
