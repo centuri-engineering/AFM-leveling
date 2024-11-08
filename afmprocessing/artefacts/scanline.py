@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import polyfit, polyval, signal
+from scipy import signal, stats
 
 def do_median_of_differences(datafield, method='linear', **kwargs):
     yres, xres = datafield.shape
@@ -83,7 +83,7 @@ def do_trimmed_mean_of_differences(datafield, trim_fraction=0.25, method='linear
         
         if diff.size > 0:
             # Calculate trimmed mean, excluding trim_fraction from both ends
-            trimmed_mean_diff = trim_mean(diff, trim_fraction)
+            trimmed_mean_diff = stats.trim_mean(diff, trim_fraction)
         else:
             trimmed_mean_diff = 0
         
