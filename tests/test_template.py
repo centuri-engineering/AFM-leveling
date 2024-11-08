@@ -28,8 +28,9 @@ if __name__ == "__main__":
 
 
     
-    ##########################################################################
-    ### Step 2 - Do data pre-processing such as scan line artefact removal ###
+    
+    #########################################################################################
+    ### Step 2 - Do data pre-processing such as denoising, and scan line artefact removal ###
     
     
     
@@ -43,8 +44,8 @@ if __name__ == "__main__":
     
     
     
-    ########################################################################
-    ### Step 5 (Optional) Do data post-processing such as removing scars ###
+    #############################################################################################
+    ### Step 5 (Optional) Do data post-processing such as removing scars, and remove outliers ###
     
     
     
