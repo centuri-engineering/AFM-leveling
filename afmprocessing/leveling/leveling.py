@@ -83,9 +83,9 @@ def fit_polynomial_surface_using_regression_model(datafield, poly_degree=3, mask
     datafield : numpy.ndarray
         2D array containing the AFM height data
     poly_degree : int
-        Degree of the polynomial surface (default=2)
+        Degree of the polynomial surface (default=3)
     mask : numpy.ndarray, optional
-        Boolean array of the same shape as `AFM_im` indicating background-like pixels.
+        Boolean array of the same shape as 'datafield' 
         `True` values indicate pixels used for model fitting.
     model_type : str
         Type of regression model to use:
@@ -191,25 +191,19 @@ def fit_polynomial_surface_using_basis_function(datafield, x_order=1, y_order=1,
 
 def fit_surface_using_random_forest_regression(datafield, mask=None, **model_params):
     """
-    Fit using Random Forest Regression with normalized data
+    Surface fitting using Random Forest Regression.
     
     Parameters
     ----------
-    Z0 : 2D numpy array
+    datafield : 2D numpy array
         Input surface data
     mask : 2D numpy array, optional
         Mask where True values will be used for fitting
-    n_estimators : int, default=100
-        Number of trees in the forest
-    max_depth : int, optional
-        Maximum depth of the trees
         
     Returns
     -------
-    pipeline : sklearn Pipeline
-        Fitted model pipeline including scaler
-    Z2 : 2D numpy array
-        Fitted surface
+    Z2_rescaled : 2D numpy array
+            Fitted surface
     """
     y, x = np.mgrid[0:datafield.shape[0], 0:datafield.shape[1]]
 
@@ -253,6 +247,9 @@ def fit_surface_using_random_forest_regression(datafield, mask=None, **model_par
 
 
 def fit_bspline_surface(datafield, x_order=3, y_order=3, mask=None):
+    """
+    Polynomial surface fitting using bivariate spline approximation
+    """
    # Create coordinate arrays
     y_coords = np.arange(datafield.shape[0])
     x_coords = np.arange(datafield.shape[1])
@@ -287,9 +284,9 @@ def fit_bspline_surface(datafield, x_order=3, y_order=3, mask=None):
     return Z_fitted.reshape(datafield.shape)
         
 
-def gradient_based_tilt_correction(datafield, mask=None):
+def fit_surface_based_on_gradients_of_data(datafield, mask=None):
     """
-    Perform gradient-based tilt correction on AFM height data.
+    Perform gradient-based surface fitting on AFM height data.
     """
     # Compute gradients
     grad_y, grad_x = np.gradient(datafield)
