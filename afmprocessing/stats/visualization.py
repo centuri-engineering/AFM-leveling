@@ -4,7 +4,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from skimage import measure
-from measurement import analyze_height_distribution
+from afmprocessing.stats.measurement import analyze_height_distribution
 
 def generate_distinct_colors(num_colors, colormap_name='viridis'):
     """Generate distinct colors using a colormap."""
@@ -247,3 +247,4 @@ def plot_height_distribution(data, n_bins='auto', normalize=False):
     
     plt.tight_layout()
     plt.show()
+    return fig

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from skimage import measure
-
+from scipy import stats
 
 def measure_objects(height_data, labeled_mask, selected_objects=None):
     props = measure.regionprops(labeled_mask, intensity_image=height_data)
