@@ -281,4 +281,4 @@ def separate_background_gmm(image_data, n_components=3, background_label=None, p
 		plt.tight_layout()
 		plt.show()
 		
-	return background_mask.astype(bool), foreground_mask
+	return foreground_mask, background_mask.astype(bool)
