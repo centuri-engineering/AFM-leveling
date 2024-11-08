@@ -46,8 +46,7 @@ def estimate_noise_params(datafield, snr):
 	Parameters:
 	data (numpy.ndarray): 2D array of height values
 	snr (float): Signal-to-Noise Ratio in dB
-	mask (numpy.ndarray): Boolean mask where True indicates pixels to ignore (optional)
-	
+
 	Returns:
 	dict: Estimated noise parameters (sigma, mean, std)
 	"""
@@ -450,7 +449,7 @@ def compare_denoising_methods_based_on_snr(datafield, noise_params):
 	# Adjust layout
 	plt.tight_layout()
 	
-	return fig, axes
+	plt.show()
 
 
 def denoise_median(datafield, window_size = 3, show_figure=False):
