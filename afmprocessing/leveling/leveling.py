@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import lsq_linear
-from scipy.interpolate import RectBivariateSpline, LinearNDInterpolator
+from scipy.interpolate import RectBivariateSpline, LinearNDInterpolator, NearestNDInterpolator, RBFInterpolator, griddata
 
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, HuberRegressor
@@ -208,14 +208,24 @@ def fit_surface_using_random_forest_regression(datafield, mask=None, **model_par
     y, x = np.mgrid[0:datafield.shape[0], 0:datafield.shape[1]]
 
     if mask is not None:
-        # Interpolate invalid points using valid data
-        valid_coords = np.argwhere(mask)  # Get coordinates of valid points
-        invalid_coords = np.argwhere(~mask)  # Get coordinates of invalid points
-        interpolator = LinearNDInterpolator(valid_coords, datafield[mask])
+        # Get coordinates and values of valid points from mask
+        valid_y, valid_x = np.where(mask)
+        valid_points = np.column_stack((valid_y, valid_x))
+        valid_values = datafield[mask]
         
-        # Fill in interpolated values
-        Z = datafield.copy()
-        Z[~mask] = interpolator(invalid_coords)
+        grid_points = np.column_stack((y.ravel(), x.ravel()))
+        
+        interpolator_linear = griddata(valid_points, valid_values, grid_points, method='linear')
+        
+        Z = interpolator_linear.reshape(datafield.shape)
+        
+        # Handle any remaining NaN values with nearest neighbor interpolation
+        if np.any(np.isnan(Z)):
+            nan_indices = np.where(np.isnan(Z))
+            nan_points = np.column_stack(nan_indices)
+            interpolator_nearest = griddata(valid_points, valid_values, nan_points, method='nearest')
+            Z[nan_indices] = interpolator_nearest
+            
     else:
         Z = datafield
     
@@ -250,26 +260,34 @@ def fit_bspline_surface(datafield, x_order=3, y_order=3, mask=None):
     """
     Polynomial surface fitting using bivariate spline approximation
     """
-   # Create coordinate arrays
-    y_coords = np.arange(datafield.shape[0])
-    x_coords = np.arange(datafield.shape[1])
-    
-    # Create meshgrid for output points
     Y, X = np.mgrid[0:datafield.shape[0], 0:datafield.shape[1]]
-    
+
     if mask is not None:
-        # Interpolate invalid points using valid data
-        valid_coords = np.argwhere(mask)  # Get coordinates of valid points
-        invalid_coords = np.argwhere(~mask)  # Get coordinates of invalid points
-        interpolator = LinearNDInterpolator(valid_coords, datafield[mask])
+        # Get coordinates and values of valid points from mask
+        valid_y, valid_x = np.where(mask)
+        valid_points = np.column_stack((valid_y, valid_x))
+        valid_values = datafield[mask]
         
-        # Fill in interpolated values
-        grid_z = datafield.copy()
-        grid_z[~mask] = interpolator(invalid_coords)
+        grid_points = np.column_stack((Y.ravel(), X.ravel()))
+        
+        interpolator_linear = griddata(valid_points, valid_values, grid_points, method='linear')
+        
+        grid_z = interpolator_linear.reshape(datafield.shape)
+        
+        # Handle any remaining NaN values with nearest neighbor interpolation
+        if np.any(np.isnan(grid_z)):
+            nan_indices = np.where(np.isnan(grid_z))
+            nan_points = np.column_stack(nan_indices)
+            interpolator_nearest = griddata(valid_points, valid_values, nan_points, method='nearest')
+            grid_z[nan_indices] = interpolator_nearest
+
     else:
         grid_z = datafield
 
-    # Fit the B-spline surface using the full coordinate arrays
+    # Fit the B-spline surface
+    y_coords = np.arange(datafield.shape[0])
+    x_coords = np.arange(datafield.shape[1])
+
     spline = RectBivariateSpline(
         x=y_coords,      # Full y coordinates
         y=x_coords,      # Full x coordinates
